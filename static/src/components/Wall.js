@@ -189,27 +189,11 @@ class Wall extends React.Component {
                   <a onClick={() => this.setState({reloading: true})} className="pointer textCen borderB3">リロード</a>
                 </div>
                 <div className="mt50">
-                  <div className="w70 mla mra">
-                    <div>
-                      <label for="id_title"><b>新規タイトル</b></label><br />
-                      <input type="text" id="title" maxlength="36" placeholder="タイトル" />
-                      <label className="mt3" for="id_content"><b>書き込み内容</b></label><br />
-                      <textarea id="content" rows="5" maxlength="1000"/>
-                      <button onClick={this.addData} className="pointer buttonA modalB">作成</button>
-                    </div>
-                  </div>
+                  <Adding func={this.addData} isBoard={true}></Adding>
                 </div>
                 <div className="off modal"></div>
                 <div className="off modal-con">
-                  <div className="w70 mla mra">
-                    <div>
-                      <label for="id_title"><b>新規タイトル</b></label><br />
-                      <input type="text" maxlength="36" placeholder="タイトル" />
-                      <label className="mt3" for="id_content"><b>書き込み内容</b></label><br />
-                      <textarea rows="5" maxlength="1000"/>
-                      <button onClick={this.addData} className="pointer buttonA modalB">作成</button>
-                    </div>
-                  </div>
+                  <Adding func={this.addData} isBoard={true}></Adding>
                 </div>
             </div>
         )
