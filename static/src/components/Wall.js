@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router,Link, Route } from 'react-router-dom';
+import Adding from './Adding';
 
 class Wall extends React.Component {
     constructor(props) {
@@ -127,7 +128,7 @@ class Wall extends React.Component {
             .then(response => {
                 return response.json()
             })
-            .then(datas => {
+            .then(() => {
                 titl.value = '';
                 conte.value = '';
                 $(".modal").addClass("off");
@@ -146,27 +147,11 @@ class Wall extends React.Component {
                 <div>
                     <h1 className="textCen">Loading ...</h1>
                     <div className="mt50">
-                    <div className="w70 mla mra">
-                      <div>
-                        <label for="id_title"><b>新規タイトル</b></label><br />
-                        <input type="text" id="title" maxlength="36" placeholder="タイトル" />
-                        <label className="mt3" for="id_content"><b>書き込み内容</b></label><br />
-                        <textarea id="content" rows="5" maxlength="1000"/>
-                        <button onClick={this.addData} className="pointer buttonA modalB">作成</button>
-                      </div>
-                    </div>
+                    <Adding func={this.addData}></Adding>
                   </div>
                   <div className="off modal"></div>
                   <div className="off modal-con">
-                    <div className="w70 mla mra">
-                      <div>
-                        <label for="id_title"><b>新規タイトル</b></label><br />
-                        <input type="text" maxlength="36" placeholder="タイトル" />
-                        <label className="mt3" for="id_content"><b>書き込み内容</b></label><br />
-                        <textarea rows="5" maxlength="1000"/>
-                        <button onClick={this.addData} className="pointer buttonA modalB">作成</button>
-                      </div>
-                    </div>
+                    <Adding func={this.addData}></Adding>
                   </div>
                 </div>
             )
