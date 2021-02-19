@@ -177,7 +177,7 @@ class CreatePost(graphene.Mutation):
 
         board = Board.objects.select_related('wall').prefetch_related('post_set').get(pk=board_pk)
         if board.can_write:
-            num = Post.objects.select_related('board').prefetch_related('anon').filter(board=board).count()
+            num = Post.objects.only('id').count()
             num = int(num) + 1
 
             if num >= MAX_POST_PER_BOAD:#1001にする
@@ -237,7 +237,7 @@ class CreateRep(graphene.Mutation):
         parent = Post.objects.get(pk=par_pk)
 
         if board.can_write:
-            num = Post.objects.select_related('board').prefetch_related('anon').filter(board=board).count()
+            num = Post.objects.only('id').count()
             num = int(num) + 1
             if num < MAX_POST_PER_BOAD:
                 board.count += 1
