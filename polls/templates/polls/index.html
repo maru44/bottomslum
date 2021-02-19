@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta property="og:title" content="BottomSlum">
+  <meta property="og:site_name" content="bottomslum.com">
+  <meta property="og:type" content="website">
+  <meta property="og:description" content="サクサク快適掲示板">
+  <meta property="og:imgage" content="https://bottomslum.com/static/image/slum.png">
+  <meta property="og:url" content="https://bottomslum.com{{ request.path }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="{% static 'polls/main.css' %}">
+  <script src="{% static 'polls/jquery-3.4.1.min.js' %}"></script>
+  <script src="{% static 'polls/main.js' %}"></script>
+  <title>BottomSlum</title>
+  <link rel="icon" type="image.png" href="{% static 'image/slum.png' %}" sizes="150x150">
+</head>
+<body>
+  <section class="section">
+    <div class="container">
+      <div id="app" class="columns"></div>
+    </div>
+  </section>
+</body>
+<script src="{% static 'build/index.js' %}"></script>
+</html>
