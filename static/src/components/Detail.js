@@ -172,8 +172,8 @@ class Detail extends React.Component {
                     <div className="mt30">
                       <div className="w70 mla mra">
                         <div>
-                          <label for="id_content"><b>書き込み内容</b></label><br />
-                          <textarea id="content" rows="5" maxlength="400"/>
+                          <label><b>書き込み内容</b></label><br />
+                          <textarea rows="5" maxlength="400"/>
                           <button onClick={this.addPost} className="pointer buttonA">送信</button>
                         </div>
                       </div>
@@ -182,9 +182,9 @@ class Detail extends React.Component {
                     <div className="off modal-con">
                       <div className="w70 mla mra">
                         <div>
-                          <label for="id_content"><b>書き込み内容</b>{this.state.replyFor && <span className="ml30">{this.state.num}への返信</span>}</label><br />
-                          <textarea id="content" rows="5" maxlength="400"/>
-                          <button onClick={this.addPost} className="pointer buttonA modalB">送信</button>
+                          <label><b>書き込み内容</b>{this.state.replyFor && <span className="ml30">{this.state.num}への返信</span>}</label><br />
+                          <textarea rows="5" maxlength="400"/>
+                          <button onClick={this.addPost} className="pointer buttonA">送信</button>
                         </div>
                       </div>
                     </div>

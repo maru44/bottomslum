@@ -7,6 +7,22 @@ import random, string
 from django_filters import FilterSet, OrderingFilter
 import datetime, re
 
+MAX_POST_PER_BOAD = 21
+
+def gen_id(int_):
+    random_ = [random.choice(string.ascii_letters + string.digits + '-' + '_') for i in range(int_)]
+    id_ = ''.join(random_)
+    return id_
+
+def get_ip(info):
+    fowarded_address = info.context.META.get('HTTP_X_FORWARDED_FOR')
+    if fowarded_address:
+        client_addr = fowarded_address.split(',')[0]
+        return client_addr
+    else:
+        client_addr = info.context.META.get('REMOTE_ADDR')
+        return client_addr
+
 class AnonType(DjangoObjectType):
     class Meta:
         model = Anonymousman
@@ -112,26 +128,23 @@ class CreateBoard(graphene.Mutation):
         wall = graphene.JSONString()
 
     def mutate(self, info, content, title, slug_name, **kwargs):
-        fowarded_address = info.context.META.get('HTTP_X_FORWARDED_FOR')
         today = datetime.date.today()
-        if fowarded_address:
-            client_addr = fowarded_address.split(',')[0]
-        else:
-            client_addr = info.context.META.get('REMOTE_ADDR')
-        #if Anonymousman.objects.filter(ip=client_addr, dating__year=today.year, dating__month=today.month, dating__day=today.day).exists():
+        client_addr = get_ip(info)
+
         if Anonymousman.objects.filter(ip=client_addr, dating=today).exists():
-            anon = Anonymousman.objects.get(ip=client_addr, dating=today)
+            anon = Anonymousman.objects.prefetch_related('post_set').get(ip=client_addr, dating=today)
         else:
-            random0 = [random.choice(string.ascii_letters + string.digits + '-' + '_') for i in range(16)]
-            aid__ = ''.join(random0)
-            anon = Anonymousman(ip=client_addr, aid=aid__)
-            anon.save()
+            aid__ = gen_id(16)
+            anon = Anonymousman.create(ip=client_addr, aid=aid__)
+
+        #wall = Wall.objects.prefetch_related('board_set').get(slug_name=slug_name)
         wall = Wall.objects.get(slug_name=slug_name)
-        random_ = [random.choice(string.ascii_letters + string.digits + '-' + '_') for i in range(8)]
-        bid = ''.join(random_) + "-00001"
+        
+        bid = gen_id(8) + "-00001"
         board = Board.objects.create(title=title, id=bid, wall=wall)
-        post = Post(content=content, board=board, number=1, anon=anon)
-        post.save()
+
+        post = Post.create(content=content, board=board, number=1, anon=anon)
+
         return CreateBoard(
             board = post.board,
             content = post.content,
@@ -153,27 +166,23 @@ class CreatePost(graphene.Mutation):
         board_pk = graphene.String()
 
     def mutate(self, info, board_pk, content, **kwargs):
-        fowarded_address = info.context.META.get('HTTP_X_FORWARDED_FOR')
         today = datetime.date.today()
-        if fowarded_address:
-            client_addr = fowarded_address.split(',')[0]
-        else:
-            client_addr = info.context.META.get('REMOTE_ADDR')
+        client_addr = get_ip(info)
+
         if Anonymousman.objects.filter(ip=client_addr, dating=today).exists():
-            anon = Anonymousman.objects.get(ip=client_addr, dating=today)
+            anon = Anonymousman.objects.prefetch_related('post_set').get(ip=client_addr, dating=today)
         else:
-            random0 = [random.choice(string.ascii_letters + string.digits + '-' + '_') for i in range(16)]
-            aid__ = ''.join(random0)
-            anon = Anonymousman(ip=client_addr, aid=aid__)
-            anon.save()
-        board = Board.objects.get(pk=board_pk)
+            aid__ = gen_id(16)
+            anon = Anonymousman.create(ip=client_addr, aid=aid__)
+
+        board = Board.objects.select_related('wall').prefetch_related('post_set').get(pk=board_pk)
         if board.can_write:
-            num = Post.objects.filter(board=board).count()
+            num = Post.objects.select_related('board').prefetch_related('anon').filter(board=board).count()
             num = int(num) + 1
-            if num >= 21:#1001にする
+
+            if num >= MAX_POST_PER_BOAD:#1001にする
                 board.can_write = False
-                #random_ = [random.choice(string.ascii_letters + string.digits + '-' + '_') for i in range(8)]
-                #bid = ''.join(random_)
+                
                 bid = board.id
                 board_id_slug = bid[:9]
                 str_board_num = bid[9:]
@@ -181,17 +190,18 @@ class CreatePost(graphene.Mutation):
                 board_num = '{0:05d}'.format(new_num)
                 new_id = board_id_slug + board_num
                 new_title = re.sub(r'(\spart(\d)+)$', "", str(board.title), 1) + " part" + str(new_num)
+
                 board_new = Board.objects.create(title=new_title, id=new_id, prev_board=board, count=2, wall=board.wall)
                 board.next_board = board_new
-                post_first = Post.objects.get(board=board, number=1)
+
+                post_first = Post.objects.select_related('board').prefetch_related('anon_set').get(board=board, number=1)
                 post_first_str = str(post_first.content)
+
                 Post.objects.create(board=board_new, content=post_first_str, anon=anon)
-                post = Post(content=content, board=board_new, number=2, anon=anon)
-                post.save()
+                post = Post.create(content=content, board=board_new, number=2, anon=anon)
             else:
                 board.count += 1
-                post = Post(content=content, board=board, number=num, anon=anon)
-                post.save()
+                post = Post.create(content=content, board=board, number=num, anon=anon)
             board.save()
             return CreatePost(
                 board = post.board,
@@ -214,28 +224,25 @@ class CreateRep(graphene.Mutation):
         par_pk = graphene.String()
 
     def mutate(self, info, board_pk, par_pk, content, **kwargs):
-        fowarded_address = info.context.META.get('HTTP_X_FORWARDED_FOR')
         today = datetime.date.today()
-        if fowarded_address:
-            client_addr = fowarded_address.split(',')[0]
-        else:
-            client_addr = info.context.META.get('REMOTE_ADDR')
+        client_addr = get_ip(info)
+
         if Anonymousman.objects.filter(ip=client_addr, dating=today).exists():
-            anon = Anonymousman.objects.get(ip=client_addr, dating=today)
+            anon = Anonymousman.objects.prefetch_related('post_set').get(ip=client_addr, dating=today)
         else:
-            random0 = [random.choice(string.ascii_letters + string.digits + '-' + '_') for i in range(16)]
-            aid__ = ''.join(random0)
+            aid__ = gen_id(16)
             anon = Anonymousman(ip=client_addr, aid=aid__)
             anon.save()
-        board = Board.objects.get(pk=board_pk)
+
+        board = Board.objects.select_related('wall').prefetch_related('post_set').get(pk=board_pk)
         parent = Post.objects.get(pk=par_pk)
+
         if board.can_write:
-            num = Post.objects.filter(board=board).count()
+            num = Post.objects.select_related('board').prefetch_related('anon').filter(board=board).count()
             num = int(num) + 1
-            if num < 21:
+            if num < MAX_POST_PER_BOAD:
                 board.count += 1
-                post = Post(content=content, board=board, number=num, anon=anon, par=parent)
-                post.save()
+                post = Post.create(content=content, board=board, number=num, anon=anon, par=parent)
             board.save()
             return CreateRep(
                 board = post.board,
