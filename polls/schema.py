@@ -135,7 +135,7 @@ class CreateBoard(graphene.Mutation):
             anon = Anonymousman.objects.prefetch_related('post_set').get(ip=client_addr, dating=today)
         else:
             aid__ = gen_id(16)
-            anon = Anonymousman.create(ip=client_addr, aid=aid__)
+            anon = Anonymousman.objects.create(ip=client_addr, aid=aid__)
 
         #wall = Wall.objects.prefetch_related('board_set').get(slug_name=slug_name)
         wall = Wall.objects.get(slug_name=slug_name)
@@ -231,8 +231,7 @@ class CreateRep(graphene.Mutation):
             anon = Anonymousman.objects.prefetch_related('post_set').get(ip=client_addr, dating=today)
         else:
             aid__ = gen_id(16)
-            anon = Anonymousman(ip=client_addr, aid=aid__)
-            anon.save()
+            anon = Anonymousman.objects.create(ip=client_addr, aid=aid__)
 
         board = Board.objects.select_related('wall').prefetch_related('post_set').get(pk=board_pk)
         parent = Post.objects.get(pk=par_pk)
