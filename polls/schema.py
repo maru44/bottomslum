@@ -143,7 +143,7 @@ class CreateBoard(graphene.Mutation):
         bid = gen_id(8) + "-00001"
         board = Board.objects.create(title=title, id=bid, wall=wall)
 
-        post = Post.create(content=content, board=board, number=1, anon=anon)
+        post = Post.objects.create(content=content, board=board, number=1, anon=anon)
 
         return CreateBoard(
             board = post.board,
@@ -173,7 +173,7 @@ class CreatePost(graphene.Mutation):
             anon = Anonymousman.objects.prefetch_related('post_set').get(ip=client_addr, dating=today)
         else:
             aid__ = gen_id(16)
-            anon = Anonymousman.create(ip=client_addr, aid=aid__)
+            anon = Anonymousman.objects.create(ip=client_addr, aid=aid__)
 
         board = Board.objects.select_related('wall').prefetch_related('post_set').get(pk=board_pk)
         if board.can_write:
@@ -198,10 +198,10 @@ class CreatePost(graphene.Mutation):
                 post_first_str = str(post_first.content)
 
                 Post.objects.create(board=board_new, content=post_first_str, anon=anon)
-                post = Post.create(content=content, board=board_new, number=2, anon=anon)
+                post = Post.objects.create(content=content, board=board_new, number=2, anon=anon)
             else:
                 board.count += 1
-                post = Post.create(content=content, board=board, number=num, anon=anon)
+                post = Post.objects.create(content=content, board=board, number=num, anon=anon)
             board.save()
             return CreatePost(
                 board = post.board,
@@ -242,7 +242,7 @@ class CreateRep(graphene.Mutation):
             num = int(num) + 1
             if num < MAX_POST_PER_BOAD:
                 board.count += 1
-                post = Post.create(content=content, board=board, number=num, anon=anon, par=parent)
+                post = Post.objects.create(content=content, board=board, number=num, anon=anon, par=parent)
             board.save()
             return CreateRep(
                 board = post.board,

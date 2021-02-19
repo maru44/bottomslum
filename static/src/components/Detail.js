@@ -183,7 +183,7 @@ class Detail extends React.Component {
                       <div className="w70 mla mra">
                         <div>
                           <label><b>書き込み内容</b>{this.state.replyFor && <span className="ml30">{this.state.num}への返信</span>}</label><br />
-                          <textarea rows="5" maxlength="400"/>
+                          <textarea id="content" rows="5" maxlength="400"/>
                           <button onClick={this.addPost} className="pointer buttonA">送信</button>
                         </div>
                       </div>

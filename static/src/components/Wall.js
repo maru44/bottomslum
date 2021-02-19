@@ -27,8 +27,8 @@ class Wall extends React.Component {
     componentDidUpdate() {
         if (this.state.reloading == true ) {
             this.Loading();
-            document.getElementById("content").value = "";
-            document.getElementById("title").value = "";
+            document.querySelectorAll("input").value = "";
+            document.querySelectorAll("textarea").value = "";
             scrollTo(0, 0);
         } else if (this.state.searching == true ) {
             const sWord = document.getElementById("searchWord").value;
