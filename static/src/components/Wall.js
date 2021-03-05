@@ -38,11 +38,11 @@ class Wall extends React.Component {
     }
 
     niceVisualHome = () => {
-        $(".yetVisual").each(function() {
+        $(".yetVisual").each(() => {
           $(this).html($(this).html().replace(/((https?):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|](\.png|\.jpg|\.gif)+)/ig, "<img src='$1'>"));
         });
         $(".yetVisual").removeClass("yetVisual");
-        $(".postedDate").each(function() {
+        $(".postedDate").each(() => {
             const dateStr = new String($(this).html())
             const dateDate = new Date(dateStr).toLocaleString({ timeZone: timezone });
             $(this).html(dateDate);
@@ -75,7 +75,7 @@ class Wall extends React.Component {
             this.setState({ loading: false, data: datas.data, reloading: false, wallslug: wall_slug });
             this.niceVisualHome();
         })
-        .catch(function(error){
+        .catch(error => {
             console.log(error);
         })
     }
@@ -101,7 +101,7 @@ class Wall extends React.Component {
             this.setState({ loading: false, data: datas.data, searching: false });
             this.niceVisualHome();
         })
-        .catch(function(error){
+        .catch(error => {
             console.log(error);
         })
     }
@@ -135,7 +135,7 @@ class Wall extends React.Component {
                 $(".modal-con").addClass("off");
                 this.setState({ reloading: true })
             })
-            .catch(function(error){
+            .catch(error => {
                 console.log(error);
             })
         }

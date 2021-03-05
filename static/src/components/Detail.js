@@ -26,14 +26,14 @@ class Detail extends React.Component {
     }
 
     niceVisual = () => {
-        $(".yetVisual").each(function() {
+        $(".yetVisual").each(() => {
           $(this).html($(this).html().replace(/((https?):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig,"<a target='_new' href='$1'>$1</a>"));
         });
-        $(".yetVisual a").each(function() {
+        $(".yetVisual a").each(() => {
           $(this).html($(this).html().replace(/((https?):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|](\.png|\.jpg|\.gif)+)/ig, "<img class='pointer' src='$1'>"));
         });
         $(".yetVisual").removeClass("yetVisual");
-        $(".postedDate").each(function() {
+        $(".postedDate").each(() => {
             //$(this).html($(this).html().replace(/(\+\d{2}:\d{2})+/g, ""));
             const dateStr = new String($(this).html())
             const dateDate = new Date(dateStr).toLocaleString({ timeZone: timezone });
@@ -61,8 +61,8 @@ class Detail extends React.Component {
             this.setState({ reloading: false, data: datas.data, loading: false, replyFor: null, num: null });
             this.niceVisual();
         })
-        .catch(function(error){
-            console.log(error);
+        .catch( err => {
+            console.log(err);
         })
     }
 
@@ -94,13 +94,13 @@ class Detail extends React.Component {
                 .then(response => {
                     return response.json()
                 })
-                .then(datas => {
+                .then(() => {
                     $(".modal").addClass("off");
                     $(".modal-con").addClass("off");
                     this.setState({ reloading: true, replyFor: null, num: null });
                 })
-                .catch(function(error){
-                    console.log(error);
+                .catch( err => {
+                    console.log(err);
                 })
             }
         } else {
@@ -119,13 +119,13 @@ class Detail extends React.Component {
                 .then(response => {
                     return response.json()
                 })
-                .then(datas => {
+                .then(() => {
                     $(".modal").addClass("off");
                     $(".modal-con").addClass("off");
                     this.setState({ reloading: true, replyFor: null, num: null });
                 })
-                .catch(function(error){
-                    console.log(error);
+                .catch( err => {
+                    console.log(err);
                 })
             }
         }

@@ -40,8 +40,8 @@ class Home extends React.Component {
         .then(dataw => {
             this.setState({ walldata: dataw.data });
         })
-        .catch(function(error){
-            console.log(error);
+        .catch(err => {
+            console.log(err);
         })
     }
 
@@ -58,11 +58,11 @@ class Home extends React.Component {
     }
 
     niceVisualHome = () => {
-        $(".yetVisual").each(function() {
+        $(".yetVisual").each(() => {
           $(this).html($(this).html().replace(/((https?):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|](\.png|\.jpg|\.gif)+)/ig, "<img src='$1'>"));
         });
         $(".yetVisual").removeClass("yetVisual");
-        $(".postedDate").each(function() {
+        $(".postedDate").each(() => {
             //$(this).html($(this).html().replace(/(\+\d{2}:\d{2})+/g, ""));
             const dateStr = new String($(this).html())
             const dateDate = new Date(dateStr).toLocaleString({ timeZone: timezone });
@@ -94,8 +94,8 @@ class Home extends React.Component {
             this.setState({ loading: false, data: datas.data, reloading: false, searching: false });
             this.niceVisualHome();
         })
-        .catch(function(error){
-            console.log(error);
+        .catch(err => {
+            console.log(err);
         })
     }
 

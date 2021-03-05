@@ -22,14 +22,14 @@ class Anon extends React.Component {
     }
 
     niceVisual = () => {
-        $(".yetVisual").each(function() {
+        $(".yetVisual").each(() => {
           $(this).html($(this).html().replace(/((https?):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig,"<a target='_new' href='$1'>$1</a>"));
         });
-        $(".yetVisual a").each(function() {
+        $(".yetVisual a").each(() => {
           $(this).html($(this).html().replace(/((https?):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|](\.png|\.jpg|\.gif)+)/ig, "<img class='pointer' src='$1'>"));
         });
         $(".yetVisual").removeClass("yetVisual");
-        $(".postedDate").each(function() {
+        $(".postedDate").each(() => {
             //$(this).html($(this).html().replace(/(\+\d{2}:\d{2})+/g, ""));
             const dateStr = new String($(this).html())
             const dateDate = new Date(dateStr).toLocaleString({ timeZone: timezone });
@@ -57,8 +57,8 @@ class Anon extends React.Component {
             this.setState({ reloading: false, data: datas.data, loading: false });
             this.niceVisual();
         })
-        .catch(function(error){
-            console.log(error);
+        .catch((err) => {
+            console.log(err);
         })
     }
 
